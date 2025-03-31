@@ -1,0 +1,23 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background: #333;
+    color: white;
+    padding: 10px;
+    text-align: right;
+}
+
+.nav-iframe {
+    width: 200px;
+    height: 100vh;
+    border: none;
+    position: fixed;
+    left: 0;
+}
+
+.container {
+    margin-left: 220px;
+    padding: 20px;
+}

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catalog - ShopNow</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    h1.page-title {
+      text-align: center;
+      font-size: 2em;
+      margin-bottom: 30px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+    .product {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .image-container {
+      width: 100%;
+      height: 250px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    .product-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+    .product-image.active {
+      opacity: 1;
+    }
+    .options {
+      width: 100%;
+    }
+    .quantity-buttons {
+      display: flex;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    .quantity-btn {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      border: 2px solid #2a9d8f;
+      background: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .quantity-btn.selected {
+      background: #2a9d8f;
+      color: white;
+    }
+    .packaging {
+      margin: 10px 0;
+    }
+    .packaging-option {
+      margin-right: 15px;
+      font-size: 0.9em;
+    }
+    .price-display {
+      font-size: 1.2em;
+      margin: 15px 0;
+      color: #264653;
+      font-weight: bold;
+    }
+    .add-to-cart {
+      background: #264653;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.3s;
+      width: 100%;
+    }
+    .add-to-cart:hover {
+      background: #1b2c35;
+    }
+    #cart-sidebar {
+      position: fixed;
+      top: 0;
+      right: -320px;
+      width: 300px;
+      height: 100%;
+      background: white;
+      box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+      transition: right 0.3s ease-in-out;
+      padding: 20px;
+      overflow-y: auto;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    #cart-sidebar.open {
+      right: 0;
+    }
+    #cart-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #264653;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 1001;
+    }
+    .cart-item {
+      margin-bottom: 15px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+    }
+    .remove-item {
+      background: #e63946;
+      color: white;
+      border: none;
+      padding: 3px 6px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.8em;
+      margin-top: 5px;
+    }
+    .cart-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    #clear-cart, #checkout {
+      background: #2a9d8f;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    #clear-cart {
+      background: #f4a261;
+    }
+  </style>
+</head>
+<body>
+  <button id="cart-toggle">🛒 Cart</button>
+  <div id="cart-sidebar">
+    <h2>Your Cart</h2>
+    <div id="cart-items"></div>
+    <div class="cart-footer">
+        <button id="checkout">Proceed to Checkout</button>
+        <button id="clear-cart">Clear Cart</button>
+      </div>
+  </div>
+  <h1 class="page-title">Shop All Products</h1>
+  <div class="grid" id="product-grid"></div>
+
+  <script>
+    const products = [
+      { name: "Mixed Bouquets", description: "Beautifully woven, perfect for gifts or decor.", price: 500, images: ["/static/images/mixed-bouquet.jpeg"] },
+      { name: "Rose Round", description: "Elegant preserved roses in a round box.", price: 950, images: ["rose1.jpg", "rose2.jpg", "rose3.jpg"] },
+      { name: "Gift Box Mini", description: "Mini flower gift box perfect for sweet surprises.", price: 750, images: ["box1.jpg", "box2.jpg", "box3.jpg"] }
+    ];
+
+    const productGrid = document.getElementById("product-grid");
+    const cartToggle = document.getElementById("cart-toggle");
+    const cartSidebar = document.getElementById("cart-sidebar");
+    const cartItemsContainer = document.getElementById("cart-items");
+    const clearCartBtn = document.getElementById("clear-cart");
+    const checkoutBtn = document.getElementById("checkout");
+
+    cartToggle.addEventListener("click", () => {
+      cartSidebar.classList.toggle("open");
+      loadCart();
+    });
+
+    clearCartBtn.addEventListener("click", () => {
+      localStorage.removeItem("cart");
+      loadCart();
+    });
+
+    checkoutBtn.addEventListener("click", () => {
+      window.location.href = "/checkout"; // Update this path if you're using Flask routing
+    });
+
+    function loadCart() {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cartItemsContainer.innerHTML = "";
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = "<p>Your cart is empty.</p>";
+        return;
+      }
+      cart.forEach((item, i) => {
+        const div = document.createElement("div");
+        div.className = "cart-item";
+        div.innerHTML = `
+          <strong>${item.name}</strong><br>
+          Qty: ${item.quantity}, ${item.packaging}<br>
+          Total: ₱${item.total}<br>
+          <button class="remove-item" data-index="${i}">Remove</button>
+        `;
+        cartItemsContainer.appendChild(div);
+      });
+    }
+
+    cartItemsContainer.addEventListener("click", e => {
+      if (e.target.classList.contains("remove-item")) {
+        const index = parseInt(e.target.dataset.index);
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        cart.splice(index, 1);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        loadCart();
+      }
+    });
+
+    products.forEach((product, index) => {
+      const productCard = document.createElement("div");
+      productCard.className = "product";
+
+      productCard.innerHTML = `
+        <div class="image-container">
+          ${product.images.map((src, i) => `<img src="${src}" class="product-image ${i === 0 ? 'active' : ''}" alt="${product.name}">`).join("")}
+        </div>
+
+        <div class="options">
+          <h2>${product.name}</h2>
+          <p style="font-size: 0.95em; color: #555;">${product.description}</p>
+
+          <div class="quantity-section">
+            <h4>Quantity:</h4>
+            <div class="quantity-buttons">
+              <button class="quantity-btn selected" data-quantity="1">1</button>
+              <button class="quantity-btn" data-quantity="2">2</button>
+              <button class="quantity-btn" data-quantity="3">3</button>
+            </div>
+          </div>
+
+          <div class="packaging">
+            <h4>Packaging:</h4>
+            <label class="packaging-option">
+              <input type="radio" name="packaging-${index}" value="basic" checked /> Basic (Free)
+            </label>
+            <label class="packaging-option">
+              <input type="radio" name="packaging-${index}" value="gift" /> Gift Wrap (+₱100)
+            </label>
+          </div>
+
+          <div class="price-display">Total: ₱${product.price}</div>
+          <button class="add-to-cart" data-product-index="${index}">Add to Cart</button>
+        </div>
+      `;
+
+      productGrid.appendChild(productCard);
+    });
+
+    // Image Rotation
+    setInterval(() => {
+      document.querySelectorAll(".image-container").forEach(container => {
+        const images = container.querySelectorAll(".product-image");
+        let current = [...images].findIndex(img => img.classList.contains("active"));
+        images[current].classList.remove("active");
+        images[(current + 1) % images.length].classList.add("active");
+      });
+    }, 3000);
+
+    document.getElementById("product-grid").addEventListener("click", function(e) {
+      if (e.target.classList.contains("quantity-btn")) {
+        const group = e.target.closest(".quantity-buttons");
+        group.querySelectorAll(".quantity-btn").forEach(btn => btn.classList.remove("selected"));
+        e.target.classList.add("selected");
+        updateAllPrices();
+      }
+
+      if (e.target.name && e.target.name.startsWith("packaging-")) {
+        updateAllPrices();
+      }
+
+      if (e.target.classList.contains("add-to-cart")) {
+        const index = parseInt(e.target.dataset.productIndex);
+        const card = e.target.closest(".product");
+        const quantity = parseInt(card.querySelector(".quantity-btn.selected").dataset.quantity);
+        const packaging = card.querySelector("input[type='radio']:checked").value;
+
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        cart.push({
+          name: products[index].name,
+          quantity: quantity,
+          packaging: packaging,
+          price: products[index].price,
+          total: quantity * products[index].price + (packaging === 'gift' ? 100 : 0)
+        });
+        localStorage.setItem("cart", JSON.stringify(cart));
+        alert(`Added to cart: ${quantity} x ${products[index].name} (${packaging})`);
+      }
+    });
+
+    function updateAllPrices() {
+      document.querySelectorAll(".product").forEach((card, i) => {
+        const quantity = parseInt(card.querySelector(".quantity-btn.selected").dataset.quantity);
+        const packaging = card.querySelector("input[type='radio']:checked").value;
+        let total = products[i].price * quantity;
+        if (packaging === 'gift') total += 100;
+        card.querySelector(".price-display").textContent = `Total: ₱${total}`;
+      });
+    }
+  </script>
+</body>
+</html>

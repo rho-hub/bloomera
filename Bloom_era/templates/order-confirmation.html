@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - Bloomera</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .confirmation-message {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        .order-details {
+            text-align: left;
+            margin: 20px auto;
+            max-width: 500px;
+        }
+        .btn {
+            background: #2a9d8f;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Order Confirmation</h1>
+    <div class="confirmation-message">
+        <h2>Thank you for your order!</h2>
+        <p>Your order has been received and is being processed.</p>
+    </div>
+    
+    <div class="order-details">
+        <h3>Order Details</h3>
+        <p><strong>Order ID:</strong> <span id="order-id"></span></p>
+        <p><strong>Status:</strong> <span id="order-status"></span></p>
+    </div>
+    
+    <a href="/" class="btn">Continue Shopping</a>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get('order_id');
+            
+            if (orderId) {
+                document.getElementById('order-id').textContent = orderId;
+                // In a real app, you might fetch order details from your backend
+                document.getElementById('order-status').textContent = 'Processing';
+            }
+        });
+    </script>
+</body>
+</html>

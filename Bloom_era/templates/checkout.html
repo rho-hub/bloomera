@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Bloomera</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .section {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            color: #999;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .name-fields {
+            display: flex;
+            gap: 15px;
+        }
+        .name-fields .form-group {
+            flex: 1;
+        }
+        .payment-option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .payment-option input {
+            width: auto;
+            margin-right: 10px;
+        }
+        .payment-option-label {
+            font-weight: bold;
+        }
+        .payment-icon {
+            margin-left: auto;
+            font-size: 20px;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+        .checkbox-group input {
+            width: auto;
+            margin-right: 10px;
+        }
+        .btn {
+            background: #2a9d8f;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background: #21867a;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">BLOOMERA</div>
+
+    <div class="section">
+        <div class="section-title">Express checkout</div>
+        <div class="payment-option">
+            <input type="radio" name="express" id="mpesa-express">
+            <label for="mpesa-express" class="payment-option-label">M-Pesa</label>
+            <span class="payment-icon">💲</span>
+        </div>
+    </div>
+
+    <div class="divider">OR</div>
+
+    <div class="section">
+        <div class="section-title">CONTACT</div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" required>
+        </div>
+        <div class="checkbox-group">
+            <input type="checkbox" id="newsletter">
+            <label for="newsletter">Email me with news and offers</label>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">DELIVERY</div>
+        <div class="form-group">
+            <label for="country">Country/Region</label>
+            <select id="country" required>
+                <option value="">Select country</option>
+                <option value="KE">Kenya</option>
+                <option value="US">United States</option>
+                <option value="UK">United Kingdom</option>
+            </select>
+        </div>
+        <div class="name-fields">
+            <div class="form-group">
+                <label for="firstname">First name</label>
+                <input type="text" id="firstname" required>
+            </div>
+            <div class="form-group">
+                <label for="lastname">Last name</label>
+                <input type="text" id="lastname" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="address">Address</label>
+            <input type="text" id="address" required>
+        </div>
+        <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city" required>
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" required>
+        </div>
+        <div class="checkbox-group">
+            <input type="checkbox" id="sms-offers">
+            <label for="sms-offers">Text me with news and offers</label>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">PAYMENT</div>
+        <p>All transactions are secure and encrypted.</p>
+        
+        <div class="payment-option">
+            <input type="radio" name="payment" id="bank-card" checked>
+            <label for="bank-card" class="payment-option-label">Bank Card</label>
+            <span class="payment-icon">💳</span>
+        </div>
+        
+        <div id="card-details">
+            <div class="form-group">
+                <label for="card-number">Card number</label>
+                <input type="text" id="card-number" placeholder="1234 5678 9012 3456">
+            </div>
+            <div class="name-fields">
+                <div class="form-group">
+                    <label for="expiry">Expiration date (MM/YY)</label>
+                    <input type="text" id="expiry" placeholder="MM/YY">
+                </div>
+                <div class="form-group">
+                    <label for="cvv">Security code</label>
+                    <input type="text" id="cvv" placeholder="CVV">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="card-name">Name on card</label>
+                <input type="text" id="card-name">
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="save-billing">
+                <label for="save-billing">Use shipping address as billing address</label>
+            </div>
+        </div>
+        
+        <div class="payment-option">
+            <input type="radio" name="payment" id="mpesa">
+            <label for="mpesa" class="payment-option-label">M-Pesa</label>
+            <span class="payment-icon">📱</span>
+        </div>
+        
+        <div id="mpesa-details" style="display:none;">
+            <div class="form-group">
+                <label for="mpesa-phone">M-Pesa Phone Number</label>
+                <input type="tel" id="mpesa-phone" placeholder="e.g., 0712345678">
+            </div>
+            <p>You will receive a payment request on your phone</p>
+        </div>
+    </div>
+
+    <div class="checkbox-group">
+        <input type="checkbox" id="remember">
+        <label for="remember">Save my information for a faster checkout</label>
+    </div>
+
+    <button class="btn">COMPLETE ORDER</button>
+
+    <script>
+        // Toggle between payment methods
+        document.getElementById('bank-card').addEventListener('change', function() {
+            document.getElementById('card-details').style.display = 'block';
+            document.getElementById('mpesa-details').style.display = 'none';
+        });
+        
+        document.getElementById('mpesa').addEventListener('change', function() {
+            document.getElementById('card-details').style.display = 'none';
+            document.getElementById('mpesa-details').style.display = 'block';
+        });
+        
+        // Form submission
+        document.querySelector('.btn').addEventListener('click', function() {
+            // Add form validation and submission logic here
+            alert('Order placed successfully!');
+        });
+    </script>
+    <!-- Add this script at the bottom of your checkout.html file -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load cart from localStorage
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        // Form submission
+        document.querySelector('.btn').addEventListener('click', async function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const formData = {
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                country: document.getElementById('country').value,
+                firstname: document.getElementById('firstname').value,
+                lastname: document.getElementById('lastname').value,
+                address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                payment_method: document.querySelector('input[name="payment"]:checked').value,
+                cart: cart
+            };
+            
+            // Basic validation
+            if (!formData.email || !formData.phone || !formData.address) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // If M-Pesa selected, validate phone
+            if (formData.payment_method === 'mpesa' && !formData.phone.startsWith('254')) {
+                alert('Please enter a valid Kenyan phone number (start with 254)');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(data.message);
+                    localStorage.removeItem('cart');
+                    window.location.href = `/order-confirmation.html?order_id=${data.order_id}`;
+                } else {
+                    alert(data.message || 'Payment failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
+    });
+</script>
+</body>
+</html>
